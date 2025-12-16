@@ -1,7 +1,7 @@
 package com.example.springaichat.service;
 
 import com.example.springaichat.dto.ChatResponse;
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
 /**
