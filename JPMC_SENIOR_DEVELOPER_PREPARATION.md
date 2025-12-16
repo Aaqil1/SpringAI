@@ -920,6 +920,97 @@ Consider:
 
 ---
 
+## 14. INTERVIEW QUESTION PLAN WITH SAMPLE ANSWERS
+
+### 14.1 Interview Schedule Plan
+
+| Round | Focus Area | Preparation Tasks | Sample Deliverables |
+|-------|------------|-------------------|---------------------|
+| Phone Screen (30–45 min) | Core Java fundamentals, recent project impact | Review resume highlights, prepare 2-minute project summaries | Clear explanation of current system, impact metrics |
+| Technical Round 1 (60 min) | Advanced Java + live coding | Practice concurrency and collections problems, rehearse Java 8 streams | Working code with tests, explanation of time/space complexity |
+| Technical Round 2 (60 min) | Spring Boot, microservices, troubleshooting | Review Spring internals, prepare war stories about debugging production issues | Architecture diagram, postmortem-style explanation |
+| System Design (60–90 min) | High-level architecture and scalability | Practice designing trading/payment/risk systems, focus on trade-offs | Whiteboard design, capacity estimates, scaling strategy |
+| Behavioral/Manager (45 min) | Leadership, culture fit, stakeholder management | Prepare STAR stories (conflict resolution, mentoring, delivery under pressure) | 5–7 STAR stories tied to business outcomes |
+
+### 14.2 Core Java and Concurrency
+
+**Q1: What is the difference between `ConcurrentHashMap` and `HashMap`?**  
+`ConcurrentHashMap` allows concurrent reads and segmented writes without locking the entire map, making it safe for multithreaded access. `HashMap` is not thread-safe; concurrent modifications can corrupt the structure, so external synchronization (e.g., `Collections.synchronizedMap`) is required for safe multithreaded use (based on recent interview reports and documentation).  
+
+**Q2: Explain `map()` vs `flatMap()` in Java Streams.**  
+`map()` transforms each element into another object (one-to-one) while keeping the stream structure intact. `flatMap()` transforms each element into a stream (one-to-many) and flattens the resulting nested streams into a single stream; perfect for working with collections of collections (per commonly asked JPMC interview questions).  
+
+**Q3: How do you detect a loop in a linked list?**  
+Use Floyd’s Cycle Detection (tortoise and hare). Initialize two pointers (`slow`, `fast`). Move `slow` by one node and `fast` by two nodes; if they ever meet, a loop exists. If `fast` reaches `null`, no loop is present.  
+
+**Q4: Describe a thread-safe Singleton implementation.**  
+Use Bill Pugh Singleton pattern with a static inner helper class. The Singleton instance is created only when the helper class is loaded, ensuring lazy initialization and thread safety without synchronization overhead.  
+
+### 14.3 Spring & Microservices
+
+**Q5: `@RestController` vs `@Controller`?**  
+`@RestController` = `@Controller + @ResponseBody`. Methods return objects serialized directly to the response body (JSON/XML). `@Controller` is used for MVC views; return values are resolved to templates unless annotated with `@ResponseBody`.  
+
+**Q6: Advantages of Spring Boot over plain Spring MVC?**  
+Spring Boot offers auto-configuration, embedded servers (Tomcat/Jetty), dependency starters, health/metrics endpoints, and opinionated defaults. This removes boilerplate XML/Java config and accelerates development (frequently cited by JPMC interviewees).  
+
+**Q7: Explain transaction propagation in Spring.**  
+Propagation defines how nested transactional methods interact. `REQUIRED` (default) joins existing transaction or creates new. `REQUIRES_NEW` suspends current transaction and starts a new one. `MANDATORY` expects an existing transaction (throws if absent). Others include `SUPPORTS`, `NOT_SUPPORTED`, `NEVER`, `NESTED`.  
+
+### 14.4 SQL and Database
+
+**Q8: Write SQL to list departments with zero employees.**  
+```sql
+SELECT d.department_name
+FROM departments d
+LEFT JOIN employees e ON d.department_id = e.department_id
+WHERE e.employee_id IS NULL;
+```
+Uses LEFT JOIN + NULL filter to find departments without matches.  
+
+### 14.5 System Design & Architecture
+
+**Q9: Design a payment processing system handling 10k TPS with 99.99% uptime.**  
+Key components: API Gateway (rate limiting, auth), Payment Service (idempotent keys, retries, fraud signals), Message Queue (Kafka) for async processing, Payment Gateway connectors, Ledger Service (double-entry accounting), Database (sharded, replicated), Cache (Redis) for hot data, Observability (Prometheus, ELK). Discuss fault tolerance, multi-region deployment, PCI compliance.  
+
+**Q10: Design a real-time risk engine.**  
+Use event-driven pipeline: Market data + trade events -> Kafka -> Stream processors (Flink/Kafka Streams) -> In-memory position store -> Risk calculators -> Alerting. Address latency (<100ms), data freshness, auditing, and recovery.  
+
+### 14.6 Behavioral / Leadership
+
+**Q11: Describe a challenging bug you resolved.**  
+Use STAR:  
+- *Situation*: Production trading outage due to thread pool starvation.  
+- *Task*: Restore service, prevent recurrence.  
+- *Action*: Captured thread dumps, identified blocking calls, reconfigured pool, introduced bulkheading/circuit breaker, wrote postmortem.  
+- *Result*: MTTR reduced from 45 min to 10 min; new runbooks adopted across team.  
+
+**Q12: How do you mentor junior developers?**  
+Explain pairing sessions, code review feedback loops, knowledge-sharing sessions, growth plans, and encouraging ownership. Tie to a measurable outcome (e.g., reduced review cycle time, junior leading features).  
+
+### 14.7 Daily Study Plan (2 Weeks Sprint Before Interview)
+
+| Day | Focus | Tasks |
+|-----|-------|-------|
+| Day 1 | Core Java refresh | JVM internals, collections deep dive, practice 2 LeetCode hard problems |
+| Day 2 | Concurrency | Review ExecutorService, CompletableFuture, write sample code |
+| Day 3 | Spring internals | Bean lifecycle, transaction propagation, security config |
+| Day 4 | Microservices | Design API gateway + service mesh diagram, study saga/outbox |
+| Day 5 | System design | Mock design: payment processor (draw diagrams, estimate capacity) |
+| Day 6 | SQL & data | Practice complex joins, window functions, optimization scenarios |
+| Day 7 | Financial domain | Read on payments/trading/risk, summarize key flows |
+| Day 8 | Coding mock | Timed coding session (1 hour) + review |
+| Day 9 | Architecture mock | 90-min design practice with peer or mentor |
+| Day 10 | Behavioral prep | Write/ rehearse 7 STAR stories, align with leadership principles |
+| Day 11 | Tech debt story | Prepare example of refactor/optimization with metrics |
+| Day 12 | Production incident | Prepare postmortem story and lessons learned |
+| Day 13 | Review & gaps | Revisit weak areas, update cheat sheets |
+| Day 14 | Rest + light review | Sleep, walkthrough slides/notes, mental rehearsal |
+
+Use this plan to ensure coverage of both technical depth and storytelling readiness based on curated interview experiences and published guidance.
+
+---
+
 ## Good Luck! 🚀
 
 Remember: As a senior developer, JPMC is looking for:
